@@ -79,6 +79,37 @@ client.connect().then(() => {
       });
     }
   );
+
+  //PUT /todolist/:id
+  app.put<{ id: number }, {}, { content: string; due: string }>(
+    "/todolist/:id",
+    async (req, res) => {
+      const { content, due } = req.body;
+      const { id } = req.params;
+
+      //checking if id exists
+      const dbres1 = await client.query(
+        `select * from to_do_list where id = $1 `,
+        [id]
+      );
+      if (dbres1.rows.length === 0) {
+        res.status(404).json({
+          result: "failed",
+          data: `ID: ${id} does not exist`,
+        });
+      }
+
+      const dbres2 = await client.query(
+        "update to_do_list set content = $1, due = $2 where id = $3 returning *",
+        [content, due, id]
+      );
+      const updatedToDo = dbres2.rows;
+      res.json({
+        result: "success",
+        data: updatedToDo,
+      });
+    }
+  );
 });
 
 //Start the server on the given port
