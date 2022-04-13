@@ -110,6 +110,38 @@ client.connect().then(() => {
       });
     }
   );
+
+  //DELETE /todolist/:id
+  app.put<{ id: number }, {}, {}>("/todolist/:id", async (req, res) => {
+    const { id } = req.params;
+
+    //checking if id exists
+    const dbres1 = await client.query(
+      `select * from to_do_list where id = $1 `,
+      [id]
+    );
+    if (dbres1.rows.length === 0) {
+      res.status(404).json({
+        result: "failed",
+        data: `ID: ${id} does not exist`,
+      });
+    }
+
+    const dbres2 = await client.query(
+      "delete from to_do_list where id = $1 returning *",
+      [id]
+    );
+    const deletedToDo = dbres2.rows;
+    res.json({
+      result: "success",
+      data: deletedToDo,
+    });
+
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE#responses
+    // we've gone for '200 response with JSON body' to respond to a DELETE
+    //  but 204 with no response body is another alternative:
+    //  res.status(204).send() to send with status 204 and no JSON body
+  });
 });
 
 //Start the server on the given port
