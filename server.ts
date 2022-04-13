@@ -112,7 +112,7 @@ client.connect().then(() => {
   );
 
   //DELETE /todolist/:id
-  app.put<{ id: number }, {}, {}>("/todolist/:id", async (req, res) => {
+  app.delete<{ id: number }, {}, {}>("/todolist/:id", async (req, res) => {
     const { id } = req.params;
 
     //checking if id exists
