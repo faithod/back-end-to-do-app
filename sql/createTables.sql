@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS to_do_list;
+
+CREATE TABLE to_do_list (
+  id SERIAL PRIMARY KEY,
+  content VARCHAR(255),
+  due DATE,
+  complete BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
