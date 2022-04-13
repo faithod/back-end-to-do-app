@@ -62,6 +62,23 @@ client.connect().then(() => {
       });
     }
   });
+
+  //POST /todolist
+  app.post<{}, {}, { content: string; due: string }>(
+    "/todolist",
+    async (req, res) => {
+      const { content, due } = req.body;
+      const dbres = await client.query(
+        "insert into to_do_list (content,due) values ($1,$2) returning *",
+        [content, due]
+      );
+      const insertedToDo = dbres.rows;
+      res.json({
+        result: "success",
+        data: insertedToDo,
+      });
+    }
+  );
 });
 
 //Start the server on the given port
