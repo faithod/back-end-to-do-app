@@ -80,36 +80,81 @@ client.connect().then(() => {
     }
   );
 
-  //PUT /todolist/:id
-  app.put<{ id: number }, {}, { content: string; due: string }>(
-    "/todolist/:id",
-    async (req, res) => {
-      const { content, due } = req.body;
-      const { id } = req.params;
+  //PATCH /todolist/:id
+  app.patch<
+    { id: number },
+    {},
+    { content: string; due?: string | null; complete?: boolean }
+  >("/todolist/:id", async (req, res) => {
+    //add error in front end for empty field
+    const { content, complete } = req.body;
+    let { due } = req.body;
+    const { id } = req.params;
 
-      //checking if id exists
-      const dbres1 = await client.query(
-        `select * from to_do_list where id = $1 `,
-        [id]
-      );
-      if (dbres1.rows.length === 0) {
-        res.status(404).json({
-          result: "failed",
-          data: `ID: ${id} does not exist`,
-        });
-      }
-
-      const dbres2 = await client.query(
-        "update to_do_list set content = $1, due = $2 where id = $3 returning *",
-        [content, due, id]
-      );
-      const updatedToDo = dbres2.rows;
-      res.json({
-        result: "success",
-        data: updatedToDo,
+    //checking if id exists
+    const dbres1 = await client.query(
+      `select * from to_do_list where id = $1 `,
+      [id]
+    );
+    if (dbres1.rows.length === 0) {
+      res.status(404).json({
+        result: "failed",
+        data: `ID: ${id} does not exist`,
       });
     }
-  );
+
+    let query;
+    const array = [];
+    //possible updates: content & due (with a value or ""), only complete
+    if (content) {
+      due = due === "" ? null : due; //so the date changes to null
+      query =
+        "update to_do_list set content = $1, due = $2 where id = $3 returning *";
+      array.push(content, due, id);
+    } else if (complete) {
+      query = "update to_do_list set complete = $1 where id = $2 returning *";
+      array.push(complete, id);
+    }
+
+    const dbres2 = await client.query(query, array);
+
+    const updatedToDo = dbres2.rows;
+    res.json({
+      result: "success",
+      data: updatedToDo,
+    });
+  });
+
+  // //PUT /todolist/:id - changing the complete value
+  // app.put<{ id: number }, {}, { complete: boolean }>(
+  //   "/todolist/:id",
+  //   async (req, res) => {
+  //     const { complete } = req.body;
+  //     const { id } = req.params;
+
+  //     //checking if id exists
+  //     const dbres1 = await client.query(
+  //       `select * from to_do_list where id = $1 `,
+  //       [id]
+  //     );
+  //     if (dbres1.rows.length === 0) {
+  //       res.status(404).json({
+  //         result: "failed",
+  //         data: `ID: ${id} does not exist`,
+  //       });
+  //     }
+
+  //     const dbres2 = await client.query(
+  //       "update to_do_list set complete = $1 where id = $2 returning *",
+  //       [complete, id]
+  //     );
+  //     const updatedToDo = dbres2.rows;
+  //     res.json({
+  //       result: "success",
+  //       data: updatedToDo,
+  //     });
+  //   }
+  // );
 
   //DELETE /todolist/:id
   app.delete<{ id: number }, {}, {}>("/todolist/:id", async (req, res) => {
