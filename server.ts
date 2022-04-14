@@ -32,7 +32,7 @@ client.connect().then(() => {
 
   //GET /todolist
   app.get("/todolist", async (req, res) => {
-    const dbres = await client.query("select * from to_do_list");
+    const dbres = await client.query("select * from to_do_list order by id"); //order by id so that when user edits a to-do item, it stays in the same position
     const toDoList = dbres.rows;
     res.json({
       result: "success",
