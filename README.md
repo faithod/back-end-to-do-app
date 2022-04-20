@@ -1,30 +1,52 @@
-# mark-fullstack-proj--starter-1
+# To-Do App
 
-## Usage:
+A small full-stack to-do app built with the PERN stack (PostgreSQL Express React Node). This is only the back-end of this application, front-end can be found here: https://github.com/faithod/front-end-to-do-app 
 
-Instead of cloning this project, click "Use this template".  This will allow you to create a repo on github which has this project's content but which is not a fork of it.
+## Demo
 
-Make sure you create the repo as being owned by your own account not by the WeAreAcademy organisation.
+https://pern-to-do-app.netlify.app/
+
+## Getting Started
+
+### Front-end set-up
+
+Install dependencies ```yarn```
+
+Run locally ```yarn start```
 
 
-## Install
+### Back-end set-up
 
-`yarn`
+Install dependencies ```yarn```
 
-## DB Setup
+Run server locally ```yarn start```
 
-Copy .env.example to .env and set `DATABASE_URL` and `PORT` to your liking.
+Or, for dev mode (restarts server automatically when relevant files change): ```yarn start:dev```
 
-Example for a local database: `DATABASE_URL=postgres://neill@localhost/pastebin`
+#### DB Setup
+
+Install PostgreSQL and run it
 
 You will need to create your own databases for this project - one locally and one on Heroku.
 
-## Running locally
+Copy .env.example to .env and set `DATABASE_URL` and `PORT` to your liking.
 
-`yarn start:dev`
+Example for a local database: `DATABASE_URL=postgres://username:password@host:port/databasename`
 
-This will set the env var LOCAL to true, which will cause the db connection configuration to NOT use SSL (appropriate for your local db)
 
-## running on heroku
+## Built With
 
-When the project is deployed to heroku, the command in your `Procfile` file will be run.
+
+### Front-end
+* ReactJS 
+* Create React App
+* JavaScript
+* TypeScript
+* HTML
+* CSS
+
+### Back-end
+* Node.js 
+* Express.js 
+* PostgreSQL 
+* Dotenv 
