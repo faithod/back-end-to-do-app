@@ -23,7 +23,7 @@ const app = express();
 app.use(express.json()); //add body parser to each following route handler
 app.use(cors()); //add CORS support to each following route handler
 
-const client = new Client(dbConfig);
+export const client = new Client(dbConfig);
 client.connect().then(() => {
   //making sure the connection is successful
 
